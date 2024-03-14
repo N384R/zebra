@@ -27,5 +27,5 @@ ani = animation.FuncAnimation(fig, animate, frames=100, interval=100)
 plt.show()
 '''
 When I run this code, I get the following error:
-hello
+hello my name is Jeyun
 '''
