@@ -16,15 +16,14 @@ class QuantumCalculator:
             if instance.energy is None or instance.eigenvectors is None:
                 print("No results to print.")
                 return
-            print("Calculated energy:", instance.energy)
-            print("Molecular orbitals:")
+            print("Calculated energy: %.6f" %instance.energy)
+            print("eigen vectors:")
             print(instance.eigenvectors)
             print("Execution time: %.3f seconds" %(end - start))
             return result
         return wrapper
 
-    @print_results
-    def hartree_fock(self, mol):
+    def _hartree_fock(self, mol):
         # Step 1: Initialize the molecular orbitals
         n = mol.shape[0]
         fock = np.zeros((n, n))
@@ -67,9 +66,33 @@ class QuantumCalculator:
         self.eigenvectors = eigenvectors
 
         return energy, eigenvectors
-    
 
-        
+    @print_results
+    def hartree_fock(self, mol):
+        return self._hartree_fock(mol)
+
+    @print_results
+    def cis(self, mol):
+        # Step 1: Calculate the Hartree-Fock energy and eigenvectors
+        self._hartree_fock(mol)
+        n = mol.shape[0]
+
+        # Step 2: Calculate the CIS matrix
+        cis_matrix = np.zeros((n, n))
+        for i in range(n):
+            for a in range(n):
+                cis_matrix[i, a] = np.sum(self.eigenvectors[i, :] * self.eigenvectors[a, :])
+
+        # Step 3: Diagonalize the CIS matrix
+        cis_eigenvalues, cis_eigenvectors = np.linalg.eigh(cis_matrix)
+
+        # Step 4: Calculate the CIS energy
+        cis_energy = np.sum(cis_eigenvalues)
+
+        self.energy = cis_energy
+        self.eigenvectors = cis_eigenvectors
+
+        return cis_energy, cis_eigenvectors
 
 # Example usage
 # mol = np.array([[1.0, 0.5], [0.5, 1.0]])  # Example molecular integrals

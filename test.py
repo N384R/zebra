@@ -1,3 +1,4 @@
+#%%
 import numpy as np
 import zebra
 
@@ -21,3 +22,13 @@ energy3, eigenvectors3 = qc.hartree_fock(mol3)
 print("\nTest case 4:")
 mol4 = np.array([[1.0, 0.5], [0.5, 1.0]])
 energy4, eigenvectors4 = qc.hartree_fock(mol4)
+
+#%%
+import numpy as np
+import zebra
+
+# Test case 5: CIS calculation test
+print("\nTest case 5:")
+mol5 = np.array([[1.0, 0.5], [0.5, 1.0]])
+qc = zebra.QuantumCalculator()
+energy5, eigenvectors5 = qc.cis(mol5)
