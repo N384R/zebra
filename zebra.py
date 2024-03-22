@@ -1,10 +1,29 @@
 import numpy as np
+import time
 
 class QuantumCalculator:
     def __init__(self):
         self.energy = None
         self.eigenvectors = None
 
+    @staticmethod
+    def print_results(func):   
+        def wrapper(*args, **kwargs):
+            instance = args[0]
+            start = time.time()
+            result = func(*args, **kwargs)
+            end = time.time()
+            if instance.energy is None or instance.eigenvectors is None:
+                print("No results to print.")
+                return
+            print("Calculated energy:", instance.energy)
+            print("Molecular orbitals:")
+            print(instance.eigenvectors)
+            print("Execution time: %.3f seconds" %(end - start))
+            return result
+        return wrapper
+
+    @print_results
     def hartree_fock(self, mol):
         # Step 1: Initialize the molecular orbitals
         n = mol.shape[0]
@@ -49,14 +68,7 @@ class QuantumCalculator:
 
         return energy, eigenvectors
     
-    def print_results(self):   
-        if self.energy is None or self.eigenvectors is None:
-            print("No results to print.")
-            return
 
-        print("\nHartree-Fock energy:", self.energy)
-        print("Molecular orbitals:")
-        print(self.eigenvectors)
         
 
 # Example usage

@@ -49,5 +49,3 @@ def myfunc(msg):
 
 myfunc("you need a python")
 
-#%%
-
