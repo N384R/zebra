@@ -1,10 +1,7 @@
 import numpy as np
 
 class QuantumCalculator:
-    def __init__(self, mol):
-        self.mol = mol
-
-    def hartree_fock(self):
+    def hartree_fock(self, mol):
         # Step 1: Initialize the molecular orbitals
         n = self.mol.shape[0]
         fock = np.zeros((n, n))
@@ -42,8 +39,8 @@ class QuantumCalculator:
 
 # Example usage
 # mol = np.array([[1.0, 0.5], [0.5, 1.0]])  # Example molecular integrals
-# qc = QuantumCalculator(mol)
-# energy, eigenvectors = qc.hartree_fock()
+# qc = QuantumCalculator()
+# energy, eigenvectors = qc.hartree_fock(mol)
 # print("Hartree-Fock energy:", energy)
 # print("Molecular orbitals:")
 # print(eigenvectors)
