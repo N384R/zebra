@@ -32,3 +32,6 @@ print("\nTest case 5:")
 mol5 = np.array([[1.0, 0.5], [0.5, 1.0]])
 qc = zebra.QuantumCalculator()
 energy5, eigenvectors5 = qc.cis(mol5)
+
+# %%
+

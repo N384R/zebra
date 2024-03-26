@@ -94,6 +94,8 @@ class QuantumCalculator:
 
         return cis_energy, cis_eigenvectors
 
+
+
 # Example usage
 # mol = np.array([[1.0, 0.5], [0.5, 1.0]])  # Example molecular integrals
 # qc = QuantumCalculator()
