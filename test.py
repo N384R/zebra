@@ -29,7 +29,7 @@ import zebra
 
 # Test case 5: CIS calculation test
 print("\nTest case 5:")
-mol5 = np.array([[1.0, 0.5], [0.5, 1.0]])
+mol5 = np.array([[1.0, 0.5, 0.2], [0.5, 1.0, 0.8], [0.1, 0.7, 0.4]])
 qc = zebra.QuantumCalculator()
 energy5, eigenvectors5 = qc.cis(mol5)
 

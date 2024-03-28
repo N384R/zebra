@@ -23,8 +23,9 @@ class QuantumCalculator:
             return result
         return wrapper
 
-    def _hartree_fock(self, mol):
+    def __hartree_fock(self, mol):
         # Step 1: Initialize the molecular orbitals
+        print("Preforming SCF calculation...")
         n = mol.shape[0]
         fock = np.zeros((n, n))
         density = np.zeros((n, n))
@@ -69,15 +70,16 @@ class QuantumCalculator:
 
     @print_results
     def hartree_fock(self, mol):
-        return self._hartree_fock(mol)
+        return self.__hartree_fock(mol)
 
     @print_results
     def cis(self, mol):
         # Step 1: Calculate the Hartree-Fock energy and eigenvectors
-        self._hartree_fock(mol)
+        self.__hartree_fock(mol)
         n = mol.shape[0]
 
         # Step 2: Calculate the CIS matrix
+        print("Preforming CIS calculation...")
         cis_matrix = np.zeros((n, n))
         for i in range(n):
             for a in range(n):
@@ -92,6 +94,7 @@ class QuantumCalculator:
         self.energy = cis_energy
         self.eigenvectors = cis_eigenvectors
 
+        print("CIS calculation complete.")
         return cis_energy, cis_eigenvectors
 
 
