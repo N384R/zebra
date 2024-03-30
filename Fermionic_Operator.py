@@ -136,5 +136,3 @@ print("in the order of the qubit operators.\n")
 print("Rule: [value] [operator] [operator] ...\n(^ is indicates the dagger operator)")
 input_operator = input("Input: ")
 sort_operator(input_operator)
-
-print('hello')
