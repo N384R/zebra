@@ -2,6 +2,8 @@
 Basis set module to load basis set from a file and store it in a dictionary.
 '''
 
+import numpy as np
+
 class BasisSet:
     '''
     Class to load basis set from a file and store it in a dictionary.
@@ -31,15 +33,18 @@ class BasisSet:
                 data = line.split()
 
                 if data[0] == '!':
-                    element, charge = data[1], data[2]
+                    element, charge = data[1], int(data[2])
                     basis_set_dict[element] = {'charge': charge, 'basis': {}}
                 elif data[0].isalpha():
                     orbital_type = data[0]
                     if orbital_type not in basis_set_dict[element]:
                         basis_set_dict[element]['basis'][orbital_type] = []
                 else:
-                    basis_set_dict[element]['basis'][orbital_type].append(list(map(float, data)))
+                    basis_set_dict[element]['basis'][orbital_type].append(np.array(data, float))
 
+        for element, data in basis_set_dict.items():
+            for orbital_type, values in data['basis'].items():
+                data['basis'][orbital_type] = np.vstack(values)
         return basis_set_dict
 
     def show_basis_set(self):

@@ -14,6 +14,7 @@ that do include electron correlation effects.
 '''
 
 import numpy as np
+import time
 from basis_set.basis_set import BasisSet
 
 class HartreeFock:
@@ -33,22 +34,63 @@ class HartreeFock:
     def __init__(self, molecule, basis_set_name):
         self.molecule = molecule
         self.basis_set = BasisSet(basis_set_name)
-        self.overlap = None
         self.one_electron = None
         self.two_electron = None
         self.energy = None
         self.eigenvectors = None
 
-    def coordinates(self, molecule):
+        self.coordinates = self.set_coordinates(molecule)
+        self.basis_functions = self.set_contracted_gaussian(self.coordinates)
+        self.overlap_integral = self.calculate_overlap()
+
+    def set_coordinates(self, molecule):
         '''Parse the molecule string and return the coordinates of the atoms.'''
 
         coordinates = []
         for atom in molecule.split(';'):
-            atom = atom.strip()
-            symbol = atom.split()[0]
-            x, y, z = atom.split()[1:]
-            coordinates.append((symbol, float(x), float(y), float(z)))
+            symbol = atom.strip().split()[0]
+            x, y, z = map(float, atom.split()[1:])
+            coordinates.append({'symbol': symbol, 'coord': (x, y, z)})
         return coordinates
+
+    def set_contracted_gaussian(self, coordinates):
+        '''Set the contracted Gaussian basis functions for an atom.'''
+
+        symbols = [coord['symbol'] for coord in coordinates]
+        contracted_gaussian = {}
+        alpha = []
+        d = []
+        for symbol in symbols:
+            for primitive in self.basis_set[symbol]['basis'].values():
+                alpha.append(primitive[:, 0])
+                d.append(primitive[:, 1])
+            contracted_gaussian['alpha'] = np.vstack(alpha)
+            contracted_gaussian['d'] = np.vstack(d)
+        return contracted_gaussian
+
+    def calculate_overlap(self):
+        '''Calculate the overlap matrix.'''
+
+        n = len(self.basis_functions['alpha'])
+        overlap = np.zeros((n, n))
+        for i in range(n):
+            for j in range(n):
+                overlap[i, j] = self.__overlap_ij(i, j)
+        return overlap
+
+    def __overlap_ij(self, i, j):
+        a = self.basis_functions['alpha']
+        d = self.basis_functions['d']
+        ri, rj = self.coordinates[i]['coord'], self.coordinates[j]['coord']
+        rij = np.linalg.norm(np.array(ri) - np.array(rj))
+        overlap_ij = 0.0
+        for k, _ in enumerate(a[i]):
+            for l, _ in enumerate(a[j]):
+                p = a[i][k] + a[j][l]
+                gaussian_factor = (np.pi / p)**(3 / 2) * (4 * a[i][k] * a[j][l] / np.pi**2)**(3 / 4)
+                exponential = np.exp(-a[i][k] * a[j][l] * rij**2 / p)
+                overlap_ij += d[i][k] * d[j][l] * gaussian_factor * exponential
+        return overlap_ij.round(6)
 
     @staticmethod
     def print_results(func):   
@@ -119,4 +161,4 @@ class HartreeFock:
 if __name__ == "__main__":
     H2 = 'H 0.0 0.0 0.0; H 0.0 0.0 1.4'
     hf = HartreeFock(H2, 'sto-3g')
-    print(hf.coordinates(H2))
+    print(hf.overlap_integral)
