@@ -1,7 +1,12 @@
 # STO-3G Basis Set
+# ! [element] [charge]
+# [orbital type] [number of gaussian] [Slater exponent]
+#     [Gaussian exponent 1] [Gaussian coefficient 1]
+#     [Gaussian exponent 2] [Gaussian coefficient 2]
+#     [Gaussian exponent 3] [Gaussian coefficient 3]
 
 ! H     1
-S   3   1.00
+S   3   1.24
     3.42525091              0.15432897       
     0.62391373              0.53532814       
     0.16885540              0.44463454       

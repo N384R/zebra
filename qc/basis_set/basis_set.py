@@ -13,9 +13,12 @@ class BasisSet:
     '''
 
     def __init__(self, basis_set_name):
-        self.basis_set_name = basis_set_name
-        self.basis_set_file = f"basis_set/{basis_set_name}"
+        self.basis_set_name = basis_set_name.upper()
+        self.basis_set_file = f"qc/basis_set/{self.basis_set_name}"
         self.basis_set = self.load_basis_set()
+
+    def __getitem__(self, element):
+        return self.basis_set[element]
 
     def load_basis_set(self):
         '''Load basis set from a file and store it in a dictionary.'''
@@ -51,4 +54,4 @@ class BasisSet:
 if __name__ == "__main__":
     basis_set = BasisSet("STO-3G")
     basis_set.show_basis_set()
-    print(basis_set)
+    print(basis_set['H'])
