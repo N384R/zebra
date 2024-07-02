@@ -14,7 +14,7 @@ that do include electron correlation effects.
 '''
 
 import numpy as np
-from .basis_set.basis_set import BasisSet
+from basis_set.basis_set import BasisSet
 
 class HartreeFock:
     '''
