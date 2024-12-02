@@ -14,7 +14,8 @@ that do include electron correlation effects.
 '''
 
 import numpy as np
-from basis_set.basis_set import BasisSet
+from .basis_set.basis_set import BasisSet
+
 
 class HartreeFock:
     '''
@@ -86,7 +87,8 @@ class HartreeFock:
         for k, _ in enumerate(a[i]):
             for l, _ in enumerate(a[j]):
                 p = a[i][k] + a[j][l]
-                gaussian_factor = (np.pi / p)**(3 / 2) * (4 * a[i][k] * a[j][l] / np.pi**2)**(3 / 4)
+                gaussian_factor = ((np.pi / p)**(3 / 2)
+                                   * (4 * a[i][k] * a[j][l] / np.pi**2)**(3 / 4))
                 exponential = np.exp(-a[i][k] * a[j][l] * rij**2 / p)
                 overlap_ij += d[i][k] * d[j][l] * gaussian_factor * exponential
         return overlap_ij.round(6)
@@ -106,7 +108,8 @@ class HartreeFock:
             # Step 3: Build the Fock matrix
             for i in range(n):
                 for j in range(n):
-                    fock[i, j] = mol[i, j] + np.sum(density * (2 * mol[i, j] - mol[j, i]))
+                    fock[i, j] = mol[i, j] + \
+                        np.sum(density * (2 * mol[i, j] - mol[j, i]))
 
             # Step 4: Diagonalize the Fock matrix
             eigenvalues, eigenvectors = np.linalg.eigh(fock)
@@ -116,14 +119,15 @@ class HartreeFock:
             for i in range(n):
                 for j in range(n):
                     for k in range(n):
-                        new_density[i, j] += 2 * eigenvectors[i, k] * eigenvectors[j, k]
+                        new_density[i, j] += 2 * \
+                            eigenvectors[i, k] * eigenvectors[j, k]
 
             # Step 6: Calculate the electronic energy
             energy_new = np.sum(density * (mol + fock))
             if np.abs(energy_new - energy) < 1e-6:
                 print("Converged in", (iteration + 1), "iterations.")
                 break
-            elif iteration == max_iter - 1:
+            if iteration == max_iter - 1:
                 print("Did not converge in", max_iter, "iterations.")
                 break
 
@@ -140,6 +144,7 @@ class HartreeFock:
         '''Perform Hartree-Fock calculation.'''
 
         return self.__hartree_fock(mol)
+
 
 if __name__ == "__main__":
     H2 = 'H 0.0 0.0 0.0; H 0.0 0.0 1.4'
